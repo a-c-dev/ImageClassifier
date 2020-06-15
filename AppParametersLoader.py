@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 
 class AppParametersLoader:
     def __init__(self):
@@ -70,11 +71,18 @@ class AppParametersLoader:
         self.args = self.parser.parse_args()
     
     #public getter methods for Application Parameters.
+    def get_by_line(self, param_name):
+        return input(f"Parameter {param_name} is undefined in the command line and its default value is incorrect in the current context. Please, insert its value manually: ")
+    
     def save_dir(self):
+         if not Path(self.args.save_dir).is_dir():
+            self.args.save_dir = self.get_by_line('save_dir')
          return self.args.save_dir
 
     def data_dir(self):
-         return self.args.data_dir
+        if not Path(self.args.data_dir).is_dir():
+            self.args.data_dir = self.get_by_line('data_dir')
+        return self.args.data_dir
     
     def arch(self):
         return self.args.arch
@@ -92,12 +100,16 @@ class AppParametersLoader:
         return self.args.gpu
     
     def image_path(self):
+        if not Path(self.args.image).is_file():
+            self.args.image = self.get_by_line('image_path')
         return self.args.image
     
     def top_k(self):
         return self.args.top_k
     
     def category_names_path(self):
+         if not Path(self.args.category_names).is_file():
+            self.args.category_names = self.get_by_line('category_names_path')
          return self.args.category_names
     
     #parameters print statement

@@ -11,6 +11,7 @@ import torchvision.models as models
 class ModelManager:
     def __init__(self, gpu_usage):
         self.device = torch.device("cuda:0" if torch.cuda.is_available() and gpu_usage else "cpu")
+        print(f"using device: {self.device}")
     
     #init model manager by model parameters
     def set_model(self, architecture, classifier, learning_rate):
@@ -25,7 +26,7 @@ class ModelManager:
         
     #init modelmanager by checkpoint file
     def load_model(self, checkpoint_path):
-        checkpoint = torch.load(checkpoint_path)
+        checkpoint = torch.load(checkpoint_path, map_location=torch.device(self.device))
         self.model = getattr(models, checkpoint['pre_trained_network'])(pretrained=True)
         self.model.classifier = checkpoint['classifier']
         self.model.classifier.load_state_dict(checkpoint['classifier_state_dict'])
