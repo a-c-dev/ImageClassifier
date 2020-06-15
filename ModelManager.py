@@ -135,15 +135,18 @@ class ModelManager:
         
     def predict(self, image, topk=5):
         #loading and processing image (Transformation and tensor creation)
-        image_to_predict = torch.from_numpy(image).type(torch.FloatTensor)
+        if self.device == 'cpu':
+            image_to_predict = torch.from_numpy(image).type(torch.FloatTensor)
+        else:
+            image_to_predict= torch.from_numpy(image).type(torch.cuda.FloatTensor)
         image_to_predict = image_to_predict.unsqueeze_(0)
+        self.model.to(self.device)
+        image_to_predict.to(self.device)
         #settimg model evaluation mode (dropout off)
         self.model.eval()
         #disabling gradients: faster code
         with torch.no_grad():
             #feedforward in the network: fetching results (prediction)
-            self.model.to(self.device)
-            image_to_predict.to(self.device)
             prediction = self.model.forward(image_to_predict)
             probabilities = torch.exp(prediction)
             top_ps= probabilities.topk(topk)[0].cpu().numpy()[0]
