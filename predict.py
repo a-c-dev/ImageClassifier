@@ -18,7 +18,7 @@ parameters = AppParametersLoader()
 parameters.print_all()
 #Data Loading
 from DataManager import DataManager
-data_manager = DataManager(parameters.data_dir())
+data_manager = DataManager()
 #previous saved model loading
 from ModelManager import ModelManager
 chk_path = parameters.save_dir() + '/checkpoint.pth'

@@ -8,7 +8,12 @@ from PIL import Image
 import json
 
 class DataManager:
-    def __init__(self, data_dir):
+    def __init__(self):
+        self.images_data = {}
+        self.dataloaders = {}
+        self.cat_to_name = {}
+        
+    def load_TrainTestValid(self, data_dir):
         self.data_dir = data_dir
         self.train_dir = self.data_dir + '/train'
         self.valid_dir = self.data_dir + '/valid'
@@ -32,18 +37,14 @@ class DataManager:
                                                                transforms.Normalize([0.485, 0.456, 0.406],
                                                                                     [0.229, 0.224, 0.225])])
 
-        self.images_data = {}
+        
         self.images_data['training'] = datasets.ImageFolder(self.train_dir, transform=images_transforms['training'])
         self.images_data['testing'] = datasets.ImageFolder(self.test_dir, transform=images_transforms['testing'])
         self.images_data['validation'] = datasets.ImageFolder(self.valid_dir, transform=images_transforms['validation'])
 
-       
-        self.dataloaders = {}
         self.dataloaders['training'] = torch.utils.data.DataLoader(self.images_data['training'], batch_size=62, shuffle=True)
         self.dataloaders['testing'] = torch.utils.data.DataLoader(self.images_data['testing'], batch_size=62)
         self.dataloaders['validation'] = torch.utils.data.DataLoader(self.images_data['validation'], batch_size=62)
-        
-        self.cat_to_name = {}
    
     def get_images_data_training(self):
         return self.images_data['training']

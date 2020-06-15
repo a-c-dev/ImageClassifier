@@ -20,7 +20,8 @@ parameters.print_all()
 
 #Data Loading
 from DataManager import DataManager
-data_manager = DataManager(parameters.data_dir())
+data_manager = DataManager()
+data_manager.load_TrainTestValid(parameters.data_dir())
 
 #model definition
 from ModelManager import ModelManager
@@ -34,7 +35,7 @@ elif parameters.arch() == 'densenet121':
 classifier = nn.Sequential(nn.Linear(input_nodes, parameters.hidden_units()),
                            nn.ReLU(),
                            nn.Dropout(0.2),
-                           nn.Linear(parameters.hidden_units(),102),
+                           nn.Linear(parameters.hidden_units(), len(data_manager.get_images_data_training().class_to_idx)),
                            nn.LogSoftmax(dim=1)
                            )
 model_manager = ModelManager(parameters.gpu())
